@@ -15,15 +15,52 @@ class WingLoadCalculator extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
-      home: const CalculatorPage(title: 'Super helpful wing load calculator'),
+      home: const HomePage(title: 'Super helpful wing load calculator'),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int currentIndex = 1;
+
+  static const List<Widget> widgets = <Widget>[
+    Center(child: Text('Hello!')),
+    CalculatorPage(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.title)),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calculate), label: 'Wing Load Calculator'),
+        ],
+        currentIndex: currentIndex,
+        onTap: (int index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+      ),
+      body: widgets.elementAt(currentIndex),
     );
   }
 }
 
 class CalculatorPage extends StatefulWidget {
-  const CalculatorPage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const CalculatorPage({Key? key}) : super(key: key);
 
   @override
   State<CalculatorPage> createState() => _CalculatorPageState();
@@ -42,10 +79,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   calculateCanopySizeGivenWingLoad() {
-    canopySize = min(
-        max(((weight + equipmentWeight) * 2.205 / wingLoad).truncateToDouble(),
-            50),
-        350);
+    canopySize =
+        min(max(((weight + equipmentWeight) * 2.205 / wingLoad), 50), 350);
   }
 
   getSkillLevel() {
@@ -83,82 +118,76 @@ class _CalculatorPageState extends State<CalculatorPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Container(
-          margin: const EdgeInsets.only(top: 20),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                Text('Your weight: ${weight.toStringAsFixed(0)} kg'),
-                Slider(
-                  min: 40.0,
-                  max: 150.0,
-                  divisions: 150 - 40,
-                  value: weight,
-                  onChanged: (value) {
-                    setState(() {
-                      weight = value;
-                      calculateWingLoad();
-                    });
-                  },
-                ),
-                Text(
-                    'Equipment weight: ${equipmentWeight.toStringAsFixed(0)} kg'),
-                Slider(
-                  min: 5.0,
-                  max: 25.0,
-                  divisions: 25 - 5,
-                  value: equipmentWeight,
-                  onChanged: (value) {
-                    setState(() {
-                      equipmentWeight = value;
-                      calculateWingLoad();
-                    });
-                  },
-                ),
-                Text('Canopy size: ${canopySize.toStringAsFixed(0)} sq ft'),
-                Slider(
-                  min: 50.0,
-                  max: 350.0,
-                  divisions: 350 - 50,
-                  value: canopySize,
-                  onChanged: (value) {
-                    setState(() {
-                      canopySize = value;
-                      calculateWingLoad();
-                    });
-                  },
-                ),
-                Text('Wing load: ${wingLoad.toStringAsFixed(2)}'),
-                Slider(
-                  min: 0.0,
-                  max: 4.0,
-                  value: wingLoad,
-                  onChanged: (value) {
-                    setState(() {
-                      wingLoad = value;
-                      calculateCanopySizeGivenWingLoad();
-                    });
-                  },
-                ),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  margin: const EdgeInsets.only(bottom: 12),
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(5)),
-                      color: getSkillColor()),
-                  child: Text(getSkillLevel(),
-                      style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold)),
-                ),
-                Text(
-                    'Recommended number of jumps: ${getMinimumAmountOfJumps()}'),
-              ],
-            ),
+    return Container(
+        margin: const EdgeInsets.only(top: 20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              Text('Your weight: ${weight.toStringAsFixed(0)} kg'),
+              Slider(
+                min: 40.0,
+                max: 150.0,
+                divisions: 150 - 40,
+                value: weight,
+                onChanged: (value) {
+                  setState(() {
+                    weight = value;
+                    calculateWingLoad();
+                  });
+                },
+              ),
+              Text(
+                  'Equipment weight: ${equipmentWeight.toStringAsFixed(0)} kg'),
+              Slider(
+                min: 5.0,
+                max: 25.0,
+                divisions: 25 - 5,
+                value: equipmentWeight,
+                onChanged: (value) {
+                  setState(() {
+                    equipmentWeight = value;
+                    calculateWingLoad();
+                  });
+                },
+              ),
+              Text('Canopy size: ${canopySize.toStringAsFixed(0)} sq ft'),
+              Slider(
+                min: 50.0,
+                max: 350.0,
+                divisions: 350 - 50,
+                value: canopySize,
+                onChanged: (value) {
+                  setState(() {
+                    canopySize = value;
+                    calculateWingLoad();
+                  });
+                },
+              ),
+              Text('Wing load: ${wingLoad.toStringAsFixed(2)}'),
+              Slider(
+                min: 0.0,
+                max: 4.0,
+                value: wingLoad,
+                onChanged: (value) {
+                  setState(() {
+                    wingLoad = value;
+                    calculateCanopySizeGivenWingLoad();
+                  });
+                },
+              ),
+              Container(
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    color: getSkillColor()),
+                child: Text(getSkillLevel(),
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold)),
+              ),
+              Text('Recommended number of jumps: ${getMinimumAmountOfJumps()}'),
+            ],
           ),
         ));
   }
