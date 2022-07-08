@@ -13,7 +13,7 @@ class WingLoadCalculator extends StatelessWidget {
     return MaterialApp(
       title: 'Wing Load Calculator',
       theme: ThemeData(
-        primarySwatch: Colors.deepOrange,
+        primarySwatch: Colors.blueGrey,
       ),
       home: const CalculatorPage(title: 'Super helpful wing load calculator'),
     );
@@ -65,6 +65,19 @@ class _CalculatorPageState extends State<CalculatorPage> {
         return '600-1500';
       case 'Expert':
         return '1500+';
+    }
+  }
+
+  getSkillColor() {
+    switch (getSkillLevel()) {
+      case 'Beginner':
+        return Colors.green;
+      case 'Intermediate':
+        return Colors.blue;
+      case 'Advanced':
+        return Colors.orange;
+      case 'Expert':
+        return Colors.red;
     }
   }
 
@@ -132,7 +145,16 @@ class _CalculatorPageState extends State<CalculatorPage> {
                     });
                   },
                 ),
-                Text('Skill level: ${getSkillLevel()}'),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(5)),
+                      color: getSkillColor()),
+                  child: Text(getSkillLevel(),
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold)),
+                ),
                 Text(
                     'Recommended number of jumps: ${getMinimumAmountOfJumps()}'),
               ],
